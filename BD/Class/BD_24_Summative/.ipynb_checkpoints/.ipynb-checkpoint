@@ -1,0 +1,382 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#### lib required for dashboard\n",
+    "import plotly.graph_objects as go\n",
+    "import dash\n",
+    "import dash_html_components as html\n",
+    "import dash_core_components as dcc\n",
+    "\n",
+    "import plotly.offline as pyo\n",
+    "\n",
+    "from dash.dependencies import State, Input, Output\n",
+    "\n",
+    "import numpy as np\n",
+    "import pandas as pd"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def datagen():\n",
+    "    my_sample_data = np.random.random_sample([100,3])\n",
+    "    cat_g = [\"good\",\"bad\",\"worst\"] \n",
+    "    sample_Cat = [cat_g[np.random.randint(0,3)] for i in range(100)]\n",
+    "    Base_Data = pd.DataFrame(my_sample_data,columns=[\"val_1\",\"val_2\",\"val_3\"])\n",
+    "    Base_Data[\"sample_Cat\"] = sample_Cat\n",
+    "    \n",
+    "    \n",
+    "    \n",
+    "    return(Base_Data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cat_g = [\"good\",\"bad\",\"worst\"] \n",
+    "\n",
+    "\n",
+    "\n",
+    "## Creating values and lables for dropdown\n",
+    "\n",
+    "options_list = []\n",
+    "for i in cat_g:\n",
+    "    options_list.append({'label': i, 'value': i})\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def fig_generator(sample_data):\n",
+    "    sample_data = sample_data.reset_index(drop=True)\n",
+    "    sample_data.head()\n",
+    "    plot_data =[]\n",
+    "\n",
+    "    for i in range(1,4):\n",
+    "        plot_data.append(go.Scatter(x=sample_data.index, y=sample_data['val_'+ str(i)], name = 'val_'+ str(i) ))\n",
+    "    plot_layout = go.Layout(title = \" This plot is generated using plotly  \")\n",
+    "\n",
+    "    fig = go.Figure( data = plot_data ,layout = plot_layout)\n",
+    "\n",
+    "    return(fig.data,fig.layout)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Dash is running on http://127.0.0.1:8050/\n",
+      "\n",
+      "Dash is running on http://127.0.0.1:8050/\n",
+      "\n",
+      " Warning: This is a development server. Do not use app.run_server\n",
+      " Warning: This is a development server. Do not use app.run_server\n",
+      " in production, use a production WSGI server like gunicorn instead.\n",
+      "\n",
+      " in production, use a production WSGI server like gunicorn instead.\n",
+      "\n",
+      " * Serving Flask app \"__main__\" (lazy loading)\n",
+      " * Environment: production\n",
+      "   WARNING: Do not use the development server in a production environment.\n",
+      "   Use a production WSGI server instead.\n",
+      " * Debug mode: off\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      " * Running on http://127.0.0.1:8050/ (Press CTRL+C to quit)\n",
+      "127.0.0.1 - - [05/Aug/2020 15:25:05] \"GET / HTTP/1.1\" 200 -\n",
+      "127.0.0.1 - - [05/Aug/2020 15:25:05] \"GET /_dash-layout HTTP/1.1\" 200 -\n",
+      "127.0.0.1 - - [05/Aug/2020 15:25:05] \"GET /_dash-dependencies HTTP/1.1\" 200 -\n",
+      "127.0.0.1 - - [05/Aug/2020 15:25:06] \"GET / HTTP/1.1\" 200 -\n",
+      "127.0.0.1 - - [05/Aug/2020 15:25:10] \"POST /_dash-update-component HTTP/1.1\" 200 -\n",
+      "127.0.0.1 - - [05/Aug/2020 15:25:13] \"POST /_dash-update-component HTTP/1.1\" 200 -\n",
+      "127.0.0.1 - - [05/Aug/2020 15:25:16] \"POST /_dash-update-component HTTP/1.1\" 200 -\n",
+      "127.0.0.1 - - [05/Aug/2020 15:25:19] \"POST /_dash-update-component HTTP/1.1\" 200 -\n",
+      "127.0.0.1 - - [05/Aug/2020 15:25:22] \"POST /_dash-update-component HTTP/1.1\" 200 -\n"
+     ]
+    }
+   ],
+   "source": [
+    "### Dash board code \n",
+    "    \n",
+    "app = dash.Dash()\n",
+    "\n",
+    "### defining the HTML component\n",
+    "\n",
+    "\n",
+    "app.layout = html.Div(children=[html.Div(\"Welcome to the dashboard\",style= {   \"color\": \"white\",\n",
+    "                                                      \"text-align\": \"center\",\"background-color\": \"blue\",\n",
+    "                                                      \"border-style\": \"dotted\",\"display\":\"inline-block\",\"width\":\"80%\"\n",
+    "                                                      \n",
+    "                                                    }),\n",
+    "                       html.Div(dcc.Dropdown(id = \"drop_down_1\" ,options= options_list , value= 'good'\n",
+    "                                                       ),style= {\n",
+    "                                                      \"color\": \"green\",\n",
+    "                                                      \"text-align\": \"center\",\"background-color\": \"darkorange\",\n",
+    "                                                      \"border-style\": \"dotted\",\"display\":\"inline-block\",\"width\":\"20%\"\n",
+    "                                                      \n",
+    "                                                    }),\n",
+    "                       html.Div(children=[html.P(\n",
+    "                            id=\"map-title\",\n",
+    "                            children = \"Forecast and validation for Facility \",\n",
+    "                        ), html.Div(dcc.Graph(id =\"plot_area\"))\n",
+    "                                                       ],style= {\n",
+    "                                                      \"color\": \"black\",\n",
+    "                                                      \"text-align\": \"center\",\"background-color\": \"yellow\",\n",
+    "                                                      \"border-style\": \"dotted\",\"display\":\"inline-block\",\"width\":\"75%\",\n",
+    "                                                                                                            \n",
+    "                                                    })],style={\"width\":\"100%\",'paffing':10})\n",
+    "\n",
+    "## Creating callback buttons\n",
+    "\n",
+    "@app.callback(Output(\"plot_area\", 'figure'),\n",
+    "              \n",
+    "              [Input(\"drop_down_1\", \"value\")])\n",
+    "\n",
+    "def updateplot(input_cat):\n",
+    "    \n",
+    "    df= datagen()\n",
+    "    sample_data = df[df[\"sample_Cat\"] == input_cat ]\n",
+    "    \n",
+    "    trace,layout = fig_generator(sample_data)\n",
+    "    \n",
+    "    return {\n",
+    "        'data': trace,\n",
+    "        'layout':layout\n",
+    "    }\n",
+    "    \n",
+    "    \n",
+    "    \n",
+    "if __name__=='__main__':\n",
+    "    app.run_server()\n",
+    "\t"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'sample_data' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[1;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[1;32m<ipython-input-8-2645b9dd9176>\u001b[0m in \u001b[0;36m<module>\u001b[1;34m\u001b[0m\n\u001b[1;32m----> 1\u001b[1;33m \u001b[0mfig_generator\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0msample_data\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[1;31mNameError\u001b[0m: name 'sample_data' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "fig_generator(sample_data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>val_1</th>\n",
+       "      <th>val_2</th>\n",
+       "      <th>val_3</th>\n",
+       "      <th>sample_Cat</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>0.084421</td>\n",
+       "      <td>0.458635</td>\n",
+       "      <td>0.098498</td>\n",
+       "      <td>bad</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>0.576283</td>\n",
+       "      <td>0.314452</td>\n",
+       "      <td>0.327935</td>\n",
+       "      <td>worst</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>0.386652</td>\n",
+       "      <td>0.211206</td>\n",
+       "      <td>0.117826</td>\n",
+       "      <td>good</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>0.338703</td>\n",
+       "      <td>0.228567</td>\n",
+       "      <td>0.708058</td>\n",
+       "      <td>bad</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>0.452373</td>\n",
+       "      <td>0.335204</td>\n",
+       "      <td>0.964615</td>\n",
+       "      <td>bad</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>0.610599</td>\n",
+       "      <td>0.548404</td>\n",
+       "      <td>0.924921</td>\n",
+       "      <td>worst</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6</th>\n",
+       "      <td>0.762451</td>\n",
+       "      <td>0.946174</td>\n",
+       "      <td>0.161435</td>\n",
+       "      <td>worst</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>7</th>\n",
+       "      <td>0.988919</td>\n",
+       "      <td>0.744122</td>\n",
+       "      <td>0.271238</td>\n",
+       "      <td>bad</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8</th>\n",
+       "      <td>0.129755</td>\n",
+       "      <td>0.588389</td>\n",
+       "      <td>0.142694</td>\n",
+       "      <td>worst</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>0.577858</td>\n",
+       "      <td>0.769259</td>\n",
+       "      <td>0.129795</td>\n",
+       "      <td>bad</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "      val_1     val_2     val_3 sample_Cat\n",
+       "0  0.084421  0.458635  0.098498        bad\n",
+       "1  0.576283  0.314452  0.327935      worst\n",
+       "2  0.386652  0.211206  0.117826       good\n",
+       "3  0.338703  0.228567  0.708058        bad\n",
+       "4  0.452373  0.335204  0.964615        bad\n",
+       "5  0.610599  0.548404  0.924921      worst\n",
+       "6  0.762451  0.946174  0.161435      worst\n",
+       "7  0.988919  0.744122  0.271238        bad\n",
+       "8  0.129755  0.588389  0.142694      worst\n",
+       "9  0.577858  0.769259  0.129795        bad"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df= datagen()\n",
+    "df.head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'input_cat' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[1;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[1;32m<ipython-input-11-782a54a7f94a>\u001b[0m in \u001b[0;36m<module>\u001b[1;34m\u001b[0m\n\u001b[0;32m      1\u001b[0m \u001b[1;33m\u001b[0m\u001b[0m\n\u001b[1;32m----> 2\u001b[1;33m \u001b[0msample_data\u001b[0m \u001b[1;33m=\u001b[0m \u001b[0mdf\u001b[0m\u001b[1;33m[\u001b[0m\u001b[0mdf\u001b[0m\u001b[1;33m[\u001b[0m\u001b[1;34m\"sample_Cat\"\u001b[0m\u001b[1;33m]\u001b[0m \u001b[1;33m==\u001b[0m \u001b[0minput_cat\u001b[0m \u001b[1;33m]\u001b[0m\u001b[1;33m\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[1;31mNameError\u001b[0m: name 'input_cat' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "\n",
+    "sample_data = df[df[\"sample_Cat\"] == input_cat ]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "hide_input": false,
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.1"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

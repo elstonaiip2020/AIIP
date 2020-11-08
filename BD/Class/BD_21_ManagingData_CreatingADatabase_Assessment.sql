@@ -1,0 +1,41 @@
+-- Exercise:
+-- A)
+-- Create a database that holds the hobbies a person could be involved in and 
+-- populate the tables with some data.
+-- 	Hints:
+	-- How many entities do you have?
+	-- What are the basic attributes of each entity?
+	-- Consider the cardinalities of the entities?
+	-- Can a person have more than one hobby?
+	-- Can a hobby be played by more than one person?
+	-- What is the relationship between the entities?
+	-- Do you need a bridge table?
+
+-- B)
+-- Populate the hobby table with a minimum of 20 hobbies
+
+-- C)
+-- Specific data that should be captured:
+-- 1) Jane Doe should be involved in exactly soccer, basketball and volleyball.
+-- 2) Smith Kafie should be inloved in exactly soccer and basketball.
+-- 3) Munira Adam should be inloved in exactly teaching, video games and basketball.
+-- 4) T'Chala Panther should be involved in only karate.
+-- 5) Jude Norvor should be invold in exactly programming.
+-- 6) Jeniffer Olsen should be involved in only soccer.
+-- 7) Esi Egyima should be inloved in exactly baseball, fishing, programming, reading and basketball.
+-- 8) Fast Max should be inloved in exactly cooking and cleaning.
+-- 9) Iron Max should be involved in only exercising.
+-- 10) Bill Nye should be invold in exactly drinking and driving.
+
+
+-- D)
+-- 1) List all the hobbies. 1
+-- 2) Count the number of hobbies. 1
+-- 3) Sum the total number of people who's last name is "Max". 2
+-- 4) What hobby has the longest name. 2
+-- 5) Who are the people are involved in basketball. 2
+-- 6) What hobby has the shortest name. 2
+-- 7) List the people involved in a sport that contains an 'r' 2
+-- 8) Who are the people involved in soccer. 2
+-- 9) Who are the poeple involved in only soccer. 4
+-- 10) How many people are involved in only soccer. 2

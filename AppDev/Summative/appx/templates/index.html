@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+	<head>
+		<title>admin</title>
+	</head>
+	<body>
+		<h1>UPLOAD MAINTENANCE SCHEDULE</h1>
+		<form method="POST" action ="/schedule" >
+			<p><input type="file" name="solar" value="" accept=".csv,.xls,.xlsx"></p>
+			<p><input type="file" name="wind" value="" accept=".csv,.xls,.xlsx"></p>
+			<p><input type="submit" value="Submit"></p>
+		</form>
+	{{msg}}
+</html>
